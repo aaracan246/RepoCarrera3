@@ -61,7 +61,7 @@ fun determinarParticipantes(): List<Vehiculo>{
  */
 
 
-// Idea -> No tengo muy claro cómo randomizar las instancias de un objeto así que voy a probar a usar un método que genere valores aleatorios y luego una lista con una palabra clave que lo enlace a ellas con un 'when'.
+// Idea -> No tengo muy claro cómo randomizar las instancias de un objeto así que voy a probar a usar un método que genere valores aleatorios y luego una lista con una palabra clave que lo enlace a ellas con un 'when'. // Update: funciona así que nice
 fun generarRandomVehiculo(): Vehiculo{
 
     val marca = listOf("Opel", "Volkswagen", "Citroen", "BMW", "Toyota", "Seat")
