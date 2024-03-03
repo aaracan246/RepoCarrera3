@@ -39,4 +39,7 @@ class Camion(nombre: String = "",
         return kotlin.math.abs(autonomiaBase - reduccionPeso)    // <- ABS(..) no funcionaba así que he importado el pack completo // Para que no pueda dar un valor negativo usamos el ABS.
     }
 
+    override fun toString(): String {
+        return "Camion(nombre=$nombre, marca=$marca, modelo=$modelo, capacidadCombustible=$capacidadCombustible, combustibleActual=$combustibleActual, kilometrosActuales=$kilometrosActuales, esElectrico=$esHibrido)"
+    }
 }

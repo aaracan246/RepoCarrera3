@@ -35,4 +35,8 @@ class Quad(nombre: String = "",
 
         return autonomiaQuad
     }
+
+    override fun toString(): String {
+        return "Quad(nombre=$nombre, marca=$marca, modelo=$modelo, capacidadCombustible=$capacidadCombustible, combustibleActual=$combustibleActual, kilometrosActuales=$kilometrosActuales, cilindrada=$cilindrada)"
+    }
 }

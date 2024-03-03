@@ -20,40 +20,46 @@ fun Float.redondear(posiciones: Int): Float {
  */
 fun determinarParticipantes(): List<Vehiculo>{
 
-    println("Por favor, introduzca el número de competidores: ")
-    val numeroDeCompetidores = readln().toInt()                           // Pedimos al usuario un número de competidores.
-    val listaParticipantesCheckRepetible = mutableSetOf<String>()         // Asignamos un conjunto donde almacenar los nombres.
-    val listaParticipantesFinal = mutableListOf<Vehiculo>()               // Creamos una variable para almacenar la lista de vehículos
 
-    for (i in 1..numeroDeCompetidores){                             // Creamos un bucle que pase una vez por número de competidores que decidan poner.
-        try {
+                                                                                    // Para controlar esto quería poner while(numeroDeCompetidores != Number) pero no te deja
+        println("Por favor, introduzca el número de competidores: ")
+        val numeroDeCompetidores = readln().toInt()                               // Pedimos al usuario un número de competidores.
+
+        val listaParticipantesCheckRepetible = mutableSetOf<String>()            // Asignamos un conjunto donde almacenar los nombres.
+        val listaParticipantesFinal = mutableListOf<Vehiculo>()                 // Creamos una variable para almacenar la lista de vehículos
+
+        for (i in 1..numeroDeCompetidores) {                             // Creamos un bucle que pase una vez por número de competidores que decidan poner.
+
 
             println("Por favor, introduzca el nombre del vehículo: ")
             var nombreVehiculo = readln()                                    // Pedimos al usuario un nombre. Este nombre no puede ser repetido.
 
-            while (nombreVehiculo.isBlank()){                               // Ni estar vacío.
-                println("El nombre del vehículo no puede estar vacío.")
-                println("Por favor, introduzca el nombre del vehículo: ")
-                nombreVehiculo = readln()
-
+            while (nombreVehiculo.isBlank() || listaParticipantesCheckRepetible.contains(nombreVehiculo)) {        // Ni estar vacío. // <- ***esto lo añado después de probar un rato. No entiendo muy bien por qué hay que cerciorarse de que el ítem no exista ya si en esencia un conjunto no puede tener ítems repetidos dentro.***
+                if (nombreVehiculo.isBlank()){
+                    println("El nombre del vehículo no puede estar vacío.")
+                }
+                else{
+                    println("Ese nombre ya existe, por favor elija otro.")
+                }
+                    println("Por favor, introduzca el nombre del vehículo: ")
+                    nombreVehiculo = readln()
             }
 
-            if (!listaParticipantesCheckRepetible.contains(nombreVehiculo))   // <- ***esto lo añado después de probar un rato. No entiendo muy bien por qué hay que cerciorarse de que el ítem no exista ya si en esencia un conjunto no puede tener ítems repetidos dentro.***
 
                 listaParticipantesCheckRepetible.add(nombreVehiculo)             // Almacenamos el nombre en un conjunto -> un conjunto debe tener ítems únicos.
 
-                val vehiculoAsignado = generarRandomVehiculo()                // Asignamos la función a una variable
 
-                listaParticipantesFinal.add(vehiculoAsignado)             // Una vez se pase el check del conjunto para eliminar repetidos se añadirá a una lista.
 
-                println("Nombre del vehículo $i -> $nombreVehiculo")
-                println("Te ha tocado... $vehiculoAsignado." )
+            val vehiculoAsignado = generarRandomVehiculo(nombreVehiculo)         // Asignamos la función a una variable
 
-            }catch (e: Exception){
-                println("Ha ocurrido un error inesperado.")
-            }
+            listaParticipantesFinal.add(vehiculoAsignado)                      // Una vez se pase el check del conjunto para eliminar repetidos se añadirá a una lista.
+
+            println("Nombre del vehículo $i -> $nombreVehiculo")
+            println("Te ha tocado... $vehiculoAsignado.")
+
+
         }
-    return listaParticipantesFinal
+        return listaParticipantesFinal
 }
 
 /**
@@ -62,7 +68,7 @@ fun determinarParticipantes(): List<Vehiculo>{
 
 
 // Idea -> No tengo muy claro cómo randomizar las instancias de un objeto así que voy a probar a usar un método que genere valores aleatorios y luego una lista con una palabra clave que lo enlace a ellas con un 'when'. // Update: funciona así que nice
-fun generarRandomVehiculo(): Vehiculo{
+fun generarRandomVehiculo(nombre: String): Vehiculo{
 
     val marca = listOf("Opel", "Volkswagen", "Citroen", "BMW", "Toyota", "Seat")
     val modelo = listOf("Corsa", "Passat", "C5", "M2", "Yaris", "Panda")
@@ -78,7 +84,7 @@ fun generarRandomVehiculo(): Vehiculo{
 
     return when(tipoVehiculo){
 
-        "Automovil" -> Automovil("",
+        "Automovil" -> Automovil(nombre,
             marca.random(),
             modelo.random(),
             capacidad,
@@ -87,7 +93,7 @@ fun generarRandomVehiculo(): Vehiculo{
             hibrido)
 
 
-        "Motocicleta" -> Motocicleta("",
+        "Motocicleta" -> Motocicleta(nombre,
             marca.random(),
             modelo.random(),
             capacidad,
@@ -96,7 +102,7 @@ fun generarRandomVehiculo(): Vehiculo{
             cilindradas)
 
 
-        "Camión" -> Camion("",
+        "Camión" -> Camion(nombre,
             marca.random(),
             modelo.random(),
             capacidad,
@@ -106,7 +112,7 @@ fun generarRandomVehiculo(): Vehiculo{
             peso)
 
 
-        else -> Quad("",
+        else -> Quad(nombre,
             marca.random(),
             modelo.random(),
             capacidad,
@@ -136,9 +142,9 @@ fun main() {
 //        Motocicleta("Fénix", "Honda", "Vital", 20f, 20f * 0.1f, 0f, 250)
 //    )
 
-    determinarParticipantes()
+    val vehiculos = determinarParticipantes()
 
-    val carrera = Carrera("Gran Carrera de Filigranas", 1000f, determinarParticipantes())
+    val carrera = Carrera("Gran Carrera de Filigranas", 1000f, vehiculos)
 
     println("\n*** ${carrera.nombreCarrera} ***\n")
     carrera.iniciarCarrera()
