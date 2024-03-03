@@ -18,29 +18,42 @@ fun Float.redondear(posiciones: Int): Float {
 /**
  * Selección del número de participantes y asignación del nombre de estos. Pide un valor numérico y luego un nombre para cada vehículo según el número de vehículos asignados.
  */
-fun determinarParticipantes(){
+fun determinarParticipantes(): List<Vehiculo>{
 
     println("Por favor, introduzca el número de competidores: ")
     val numeroDeCompetidores = readln().toInt()                           // Pedimos al usuario un número de competidores.
+    val listaParticipantesCheckRepetible = mutableSetOf<String>()         // Asignamos un conjunto donde almacenar los nombres.
+    val listaParticipantesFinal = mutableListOf<Vehiculo>()               // Creamos una variable para almacenar la lista de vehículos
 
     for (i in 1..numeroDeCompetidores){                             // Creamos un bucle que pase una vez por número de competidores que decidan poner.
+        try {
 
-        println("Por favor, introduzca el nombre del vehículo: ")
-        val nombreVehiculo = readln()                                     // Pedimos al usuario un nombre. Este nombre no puede ser repetido.
-        val listaParticipantesCheckRepetible = mutableSetOf<String>()     // Asignamos un conjunto donde almacenar los nombres.
-        listaParticipantesCheckRepetible.plus(nombreVehiculo)             // Almacenamos el nombre en un conjunto -> un conjunto debe tener ítems únicos.
+            println("Por favor, introduzca el nombre del vehículo: ")
+            var nombreVehiculo = readln()                                    // Pedimos al usuario un nombre. Este nombre no puede ser repetido.
 
-        for (j in listaParticipantesCheckRepetible){                      // Creamos otro bucle que se recorra la lista de nombres sin repetir y que genere una lista final con los vehículos creados.
+            while (nombreVehiculo.isBlank()){                               // Ni estar vacío.
+                println("El nombre del vehículo no puede estar vacío.")
+                println("Por favor, introduzca el nombre del vehículo: ")
+                nombreVehiculo = readln()
 
-            val vehiculoAsignado = generarRandomVehiculo()                // Asignamos la función a una variable
-            val listaParticipantesFinal = listOf<Vehiculo>()              // Creamos una variable para almacenar la lista de vehículos
+            }
 
-            listaParticipantesFinal.addLast(vehiculoAsignado)             // Una vez se pase el check del conjunto para eliminar repetidos se añadirá a una lista.
+            if (!listaParticipantesCheckRepetible.contains(nombreVehiculo))   // <- ***esto lo añado después de probar un rato. No entiendo muy bien por qué hay que cerciorarse de que el ítem no exista ya si en esencia un conjunto no puede tener ítems repetidos dentro.***
 
-            return
+                listaParticipantesCheckRepetible.add(nombreVehiculo)             // Almacenamos el nombre en un conjunto -> un conjunto debe tener ítems únicos.
+
+                val vehiculoAsignado = generarRandomVehiculo()                // Asignamos la función a una variable
+
+                listaParticipantesFinal.add(vehiculoAsignado)             // Una vez se pase el check del conjunto para eliminar repetidos se añadirá a una lista.
+
+                println("Nombre del vehículo $i -> $nombreVehiculo")
+                println("Te ha tocado... $vehiculoAsignado." )
+
+            }catch (e: Exception){
+                println("Ha ocurrido un error inesperado.")
+            }
         }
-    }
-
+    return listaParticipantesFinal
 }
 
 /**
@@ -114,18 +127,18 @@ fun generarRandomVehiculo(): Vehiculo{
  */
 fun main() {
 
-    val vehiculos = listOf(
-        Automovil("aurora", "Seat", "Panda", 50f, 50f * 0.1f, 0f, true),
-        Automovil("Boreal m8", "BMW", "M8", 80f, 80f * 0.1f, 0f, false),
-        Motocicleta("Céfiro", "Derbi", "Motoreta", 15f, 15f * 0.1f, 0f, 500),
-        Automovil("Dinamo", "Cintroen", "Sor", 70f, 70f * 0.1f, 0f, true),
-        Automovil("eclipse negro", "Renault", "Espacio", 60f, 60f * 0.1f, 0f, false),
-        Motocicleta("Fénix", "Honda", "Vital", 20f, 20f * 0.1f, 0f, 250)
-    )
+//    val vehiculos = listOf(
+//        Automovil("aurora", "Seat", "Panda", 50f, 50f * 0.1f, 0f, true),
+//        Automovil("Boreal m8", "BMW", "M8", 80f, 80f * 0.1f, 0f, false),
+//        Motocicleta("Céfiro", "Derbi", "Motoreta", 15f, 15f * 0.1f, 0f, 500),
+//        Automovil("Dinamo", "Cintroen", "Sor", 70f, 70f * 0.1f, 0f, true),
+//        Automovil("eclipse negro", "Renault", "Espacio", 60f, 60f * 0.1f, 0f, false),
+//        Motocicleta("Fénix", "Honda", "Vital", 20f, 20f * 0.1f, 0f, 250)
+//    )
 
     determinarParticipantes()
 
-    val carrera = Carrera("Gran Carrera de Filigranas", 1000f, vehiculos)
+    val carrera = Carrera("Gran Carrera de Filigranas", 1000f, determinarParticipantes())
 
     println("\n*** ${carrera.nombreCarrera} ***\n")
     carrera.iniciarCarrera()
